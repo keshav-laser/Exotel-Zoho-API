@@ -41,7 +41,7 @@ def home():
     response = requests.get(f"{url}",headers=headers)
     return response.json()
 
-@app.route("/create",methods=["POST"])
+@app.route("/create",methods=["GET"])
 def create():
     access_token = environ.get("ACCESS_TOKEN")
     CallFrom = request.args.get("CallFrom")
