@@ -22,24 +22,33 @@ def create_phone_record_in_zoho(CallFrom,access_token):
     headers = {
         "Content-Type":"application/json",
         "Authorization": "Zoho-oauthtoken " + access_token,
-        "environment": "development"
+        "environment": environ.get("ENVIRONMENT")
     }
     CallFrom = request.args.get("CallFrom")
     data = {"data":[{"Phone_Number":f"{CallFrom}"}]}
     response = requests.post(f"{url}",headers=headers,json=data)
     return response.json()
 
-@app.route("/")
-def home():
-    access_token = environ.get("ACCESS_TOKEN")
+def get_data(access_token):
     url = "https://creator.zoho.in/api/v2.1/strandls/spot/report/All_Phlebotomy_Results"
     headers = {
         "Content-Type":"application/json",
         "Authorization": "Zoho-oauthtoken " + access_token,
-        "environment": "development"
+        "environment": environ.get("ENVIRONMENT")
     }
     response = requests.get(f"{url}",headers=headers)
     return response.json()
+
+@app.route("/")
+def home():
+    access_token = environ.get("ACCESS_TOKEN")
+    response = get_data(access_token)
+    if response["code"]==1030:
+        access_token = fetch_new_access_token()
+        environ["ACCESS_TOKEN"] = f"{access_token}"
+        set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
+        response = get_data(access_token)
+    return response
 
 @app.route("/create",methods=["GET"])
 def create():
