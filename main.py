@@ -55,7 +55,7 @@ def home():
         access_token = fetch_new_access_token()
         print(access_token)
         environ["ACCESS_TOKEN"] = f"{access_token}"
-        set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
+        # set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
         response = get_data(access_token)
     return response
 
@@ -66,7 +66,7 @@ def create():
     if(response["code"] == 1030):
         access_token = fetch_new_access_token()
         environ["ACCESS_TOKEN"] = f"{access_token}"
-        set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
+        # set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
         response = create_phone_record_in_zoho(access_token)
     return response
 
