@@ -18,6 +18,25 @@ def fetch_new_access_token():
     access_token = access_token_response["access_token"]
     return access_token
 
+def create_phone_record_in_zoho_success(access_token):
+    url = "https://creator.zoho.in/api/v2.1/strandls/spot/form/Missed_Call_Logs"
+    headers = {
+        "Content-Type":"application/json",
+        "Authorization": "Zoho-oauthtoken " + access_token,
+        "environment": environ.get("ENVIRONMENT")
+    }
+    CallFrom = request.args.get("CallFrom")
+    CallTo = request.args.get("CallTo")
+    DialCallDuration = request.args.get("DialCallDuration")
+    StartTime = request.args.get("StartTime")
+    StartTime = datetime.strptime(StartTime,'%Y-%m-%d %H:%M:%S')
+    StartTime = StartTime.strftime('%d-%b-%Y %H:%M:%S')
+    DialCallStatus = request.args.get("DialCallStatus")
+    Direction = request.args.get("Direction")
+    data = {"data":[{"From":f"+91 {CallFrom}", "To":f"+91 {CallTo}","Call_Duration":f"{DialCallDuration}","Start_Time":f"{StartTime}","Call_Type":f"{DialCallStatus}","Direction":f"{Direction}"}]}
+    response = requests.post(f"{url}",headers=headers,json=data)
+    return response.json()
+
 def create_phone_record_in_zoho(access_token):
     url = "https://creator.zoho.in/api/v2.1/strandls/spot/form/Missed_Call_Logs"
     headers = {
@@ -68,6 +87,23 @@ def create():
         environ["ACCESS_TOKEN"] = f"{access_token}"
         # set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
         response = create_phone_record_in_zoho(access_token)
+    return response
+
+
+@app.route("/create/success",methods=["GET"])
+def create():
+    access_token = environ.get("ACCESS_TOKEN")
+    response = create_phone_record_in_zoho_success(access_token)
+    if(response["code"] == 1030):
+        access_token = fetch_new_access_token()
+        environ["ACCESS_TOKEN"] = f"{access_token}"
+        # set_key(".env", "ACCESS_TOKEN", environ["ACCESS_TOKEN"])
+        response = create_phone_record_in_zoho_success(access_token)
+    return response
+
+@app.route("/convert/to/csv",methods=["GET"])
+def create():
+    response = request.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/" + "135888000010770139" + "/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/" + "1703097633322_Double_Bar_Graph_Template.pdf")
     return response
 
 
