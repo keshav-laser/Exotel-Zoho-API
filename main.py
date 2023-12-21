@@ -2,6 +2,7 @@ from flask import Flask, request
 from datetime import datetime
 import requests
 import json
+import camelot
 from dotenv import load_dotenv, set_key
 load_dotenv()
 from os import environ
@@ -103,8 +104,16 @@ def create_success():
 
 @app.route("/convert/to/csv",methods=["GET"])
 def convert_to_csv():
-    response = requests.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/" + "135888000010770139" + "/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/" + "1703097633322_Double_Bar_Graph_Template.pdf")
-    return response.json()
+    response = requests.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/135888000010792355/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/1703152020307_Untitled_document__2_.pdf")
+    with open('sample.pdf', 'wb') as f:
+        f.write(response.content)
+    tables = camelot.read_pdf('sample.pdf', pages='all')
+    tables.export('found_table.csv', f='csv')
+    resultList = list()
+    for table in tables:
+        resultList.append(table.df.values.tolist())
+    return resultList
+
 
 
 if __name__ == "__main__":
