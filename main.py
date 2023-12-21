@@ -108,7 +108,6 @@ def convert_to_csv():
     with open('sample.pdf', 'wb') as f:
         f.write(response.content)
     tables = camelot.read_pdf('sample.pdf', pages='all')
-    tables.export('found_table.csv', f='csv')
     resultList = list()
     for table in tables:
         resultList.append(table.df.values.tolist())
