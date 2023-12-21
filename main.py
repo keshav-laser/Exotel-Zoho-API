@@ -91,7 +91,7 @@ def create():
 
 
 @app.route("/create/success",methods=["GET"])
-def create():
+def create_success():
     access_token = environ.get("ACCESS_TOKEN")
     response = create_phone_record_in_zoho_success(access_token)
     if(response["code"] == 1030):
@@ -102,7 +102,7 @@ def create():
     return response
 
 @app.route("/convert/to/csv",methods=["GET"])
-def create():
+def convert_to_csv():
     response = request.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/" + "135888000010770139" + "/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/" + "1703097633322_Double_Bar_Graph_Template.pdf")
     return response
 
