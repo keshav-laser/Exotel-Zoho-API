@@ -6,6 +6,7 @@ import camelot
 from dotenv import load_dotenv, set_key
 load_dotenv()
 from os import environ
+import fitz
 
 app = Flask(__name__)
 
@@ -104,13 +105,20 @@ def create_success():
 
 @app.route("/convert/to/csv",methods=["GET"])
 def convert_to_csv():
-    response = requests.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/135888000010792355/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/1703152020307_Untitled_document__2_.pdf")
-    with open('sample.pdf', 'wb') as f:
-        f.write(response.content)
-    tables = camelot.read_pdf('sample.pdf', pages='all')
+    response = requests.get("https://creatorapp.zohopublic.in/file/strandls/spot/test_data_upload_Report/135888000010792355/File_upload/download/pkqfB78F9NHqtAMpRpWyHbtMdpTdTOGRn7w7Q7Oj1fjs4rzTOGZpnZn4J0uaefKt4rYxH1M0dKGAMwV22wtCUJeJf9OWt3EDpD1Z?filepath=/1703229009215_Untitled_document__2_.pdf")
+    print(response.content)
+    doc = fitz.open(stream=response.content, filetype="pdf")
+    # with open('sample.pdf', 'wb') as f:
+    #     f.write(response.content)
+    # tables = camelot.read_pdf('sample.pdf', pages='all')
     resultList = list()
-    for table in tables:
-        resultList.append(table.df.values.tolist())
+    for i in range(doc.page_count):
+        page = doc.load_page(i)
+        tables = page.find_tables()
+        for table in tables:
+            resultList.append(table.extract())
+    # for table in tables:
+    #     resultList.append(table.df.values.tolist())
     return resultList
 
 
