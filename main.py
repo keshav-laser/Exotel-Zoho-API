@@ -2,7 +2,6 @@ from flask import Flask, request
 from datetime import datetime
 import requests
 import json
-import camelot
 from dotenv import load_dotenv, set_key
 load_dotenv()
 from os import environ
