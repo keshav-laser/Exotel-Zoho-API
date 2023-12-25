@@ -3,4 +3,4 @@ requests
 python-dotenv
 gunicorn
 camelot-py[cv]
-pymupdf
+pymupdf>=1.23
