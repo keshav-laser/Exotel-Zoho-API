@@ -105,6 +105,7 @@ def create_success():
 @app.route("/convert/to/csv",methods=["GET"])
 def convert_to_csv():
     urlToCall = request.args.get("url")
+    print(urlToCall)
     response = requests.get(urlToCall)
     print(response.content)
     doc = fitz.open(stream=response.content, filetype="pdf")
