@@ -6,6 +6,7 @@ from dotenv import load_dotenv, set_key
 load_dotenv()
 from os import environ
 import fitz
+from main3 import get_final_str_from_stream
 
 app = Flask(__name__)
 
@@ -107,23 +108,15 @@ def convert_to_csv():
     urlToCall = request.args.get("url")
     print(urlToCall)
     response = requests.get(urlToCall)
-    print(response.content)
-    doc = fitz.open(stream=response.content, filetype="pdf")
+    # print(response.content)
+    final_result = get_final_str_from_stream(response_content=response.content)
     # with open('sample.pdf', 'wb') as f:
     #     f.write(response.content)
-    # tables = camelot.read_pdf('sample.pdf', pages='all')
-    resultList = list()
-    for i in range(doc.page_count):
-        page = doc.load_page(i)
-        tables = page.find_tables()
-        for table in tables:
-            resultList.append(table.extract())
     # for table in tables:
     #     resultList.append(table.df.values.tolist())
-    return resultList
+    return final_result
 
 
 
 if __name__ == "__main__":
     app.run(debug=False)
-
