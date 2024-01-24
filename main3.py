@@ -49,7 +49,14 @@ def get_final_str_from_block(page,bbox,final_result):
     return final_result
 
 def post_process_result(final_result):
-    return final_result.replace("\n##"," ")
+    final_result = final_result.replace("\n##"," ")
+    textList = final_result.split('\n')
+    final_result = ""
+    for textElem in textList:
+        tempStr = textElem.replace(",","")
+        if len(tempStr)!=0:
+            final_result += textElem + "\n"
+    return final_result
 # for i in range(doc.page_count):
 #     page = doc.load_page(i)
 #     textpage = page.get_textpage()
